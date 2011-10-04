@@ -1,11 +1,19 @@
 Can't get deeper than jPath does
-Well folks, JPath came about the same time I got pissed off at heavily nested JSON objects. It was both lengthy, unreliable and unreadable when you had to write a whole line of "IF" checks just to get data member nested 4 levels deep inside a JSON object. JPath is a traverse tool that allows XPATH-like navigation within a JSON structure and a little more.
+Well folks, JPath came about the same time I got pissed off at heavily nested JSON objects. 
+It was both lengthy, unreliable and unreadable when you had to write a whole line of "IF" checks just to get data
+member nested 4 levels deep inside a JSON object. JPath is a traverse tool that allows XPATH-like navigation within a
+JSON structure and a little more.
 
 How does it work?
-jPath is basically a recursive traverser that evaluates an expression you provide and finds each piece of data you specify one step (recursion) at a time.
+jPath is basically a recursive traverser that evaluates an expression you provide and finds each piece of data you
+specify one step (recursion) at a time.
 
 Does it support conditions?
-Just like XPATH, it does support conditional filtering, where you basically specify what nodes you want to retrieve based on certain condition. Conditional queries work by comparing data members to value you provide inside your expression (it does not do comparing between data members). So for example if you have an array of objects and you want to get only those objects where member foo = 1, you would write "obj[foo == 1]", more examples later. It supports a wide range of evaluations here is the list:
+Just like XPATH, it does support conditional filtering, where you basically specify what nodes you want to retrieve
+based on certain condition. Conditional queries work by comparing data members to value you provide inside your
+expression (it does not do comparing between data members). So for example if you have an array of objects and you want
+to get only those objects where member foo = 1, you would write "obj[foo == 1]", more examples later. It supports a
+wide range of evaluations here is the list:
 
 "==" | "=" - compares data member for equality
 "!=" - compares data member inequality
@@ -18,12 +26,18 @@ Just like XPATH, it does support conditional filtering, where you basically spec
 "$=" - ends with
 "*=" - contains a string anywhere inside
 "?" - allows you to pass a custom evaluation function
-During the comparing stage, all values are type matched (coerced) to the types of values you're comparing against. What this means is that you always compare numbers against numbers and not strings, and same goes for every other data type.
+During the comparing stage, all values are type matched (coerced) to the types of values you're comparing against. 
+What this means is that you always compare numbers against numbers and not strings, and same goes for every other data
+type.
 
-If your value contains a space, you can enclose your value in single quotes. (i.e. [foo == 'hello world']) Normally you don't have to do that.
+If your value contains a space, you can enclose your value in single quotes. (i.e. [foo == 'hello world']) Normally you
+don't have to do that.
 
 What else it can do?
-One thing to note is that there is a special "*" selector that references an object itself, so you may use it lets say against an array of objects (i.e. *[ foo == bah] - will return rows where member foo has value bah). You can also have "deep" value comparing (i.e. obj[ foo.bah == "wow"] ). Now that you can do deep value comparing, you can also check for native properties such as "length" (i.e. obj( [ name.length > 3 ]) ).
+One thing to note is that there is a special "*" selector that references an object itself, so you may use it lets say
+against an array of objects (i.e. *[ foo == bah] - will return rows where member foo has value bah). You can also have
+"deep" value comparing (i.e. obj[ foo.bah == "wow"] ). Now that you can do deep value comparing, you can also check for
+native properties such as "length" (i.e. obj( [ name.length > 3 ]) ).
 
 API
 
