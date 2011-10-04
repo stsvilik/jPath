@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>jPath Test</title>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.js"></script>
+<script src="https://raw.github.com/stsvilik/jPath/master/jpath.js"></script>
+<script>
+
+
+var obj = {
+		items: [
+			{a:1, foo:"test", b:true},
+			{a:2, foo:"test1", b:true},
+			{a:3, foo:"test2", b:false},
+			{a:4, foo:"test3", b:true}
+		],
+		
+		items2: [
+			{names:[
+						{name:"Sam"},
+						{name:"John"},
+						{name:"Dave"},
+						{name:"Bob"}
+				   ], start:1},
+			{names:[
+						{name:"Dave"},
+						{name:"Joe"},
+						{name:"Jon"},
+						{name:"Steve"}
+				   ], start:2}
+		]
+	};
+	
+	
+	
+		//debugger;
+		
+		console.log( "get items", jPath.filter(obj, "items"));
+		console.log( "get self reference (*)", jPath.filter(obj, "*"));
+		console.log( "get *.items", jPath.filter(obj, "*.items"));
+		console.log( "get item by index (items[0])", jPath.filter(obj, "items[0]"));
+		console.log( "get item w/condition (items[a > 2])", jPath.filter(obj, "items[a > 2]"));
+		
+		console.log( "get children of an array (items2[0].names.name)", jPath.filter(obj, "items2[0].names.name"));
+		
+		console.log( "get children of an arrays (items2.names.name)", jPath.filter(obj, "items2.names.name"));
+		
+		console.log( "get children w/ condition (items2.names[name == Sam])", jPath.filter(obj, "items2.names[name == Sam]"));
+		
+		console.log( "get children property w/ condition (items2.names[name == Sam].name) ", jPath.filter(obj, "items2.names[name == Sam].name"));
+		
+		console.time("Filtering 1000");
+		for(var i = 0, j = 1000; j > i; i++) {
+			jPath.select(obj, "items2.names[name == Sam].name");
+		}
+		console.timeEnd("Filtering 1000");
+		
+		console.log( "using native properties in condition", 
+			jPath.select(obj, "items2.names[(name.length > 2) && (name == Sam)]")
+		);
+		
+		console.log( "using undefined in condition",
+			jPath.filter(obj, "items2[names != undefined]")
+		);
+	
+
+</script>
+</head>
+
+<body>
+</body>
+</html>
