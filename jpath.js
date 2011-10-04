@@ -1,21 +1,29 @@
 //jpath.js - is a library that allows filtering of JSON data based on pattern-like expression
-(function(document, Array, $, undef) {	
+(function(document, Array, undef) {	
 	var 
 		TRUE = !0,
 		FALSE = !1,
 		UNDEF = "undefined",
 		STRING = "string",
+		FUNCTION = "function",
 		PERIOD = ".",
+		SPACE = '',
+		FLAGS = 'g',
 		
-		rxTokens = new RegExp("([A-Za-z0-9_\\*@]+(?:\\[.+?\\])?)","g"),
+		rxTokens = new RegExp("([A-Za-z0-9_\\*@]+(?:\\[.+?\\])?)", FLAGS),
 		rxIndex = new RegExp("(\\S+)\\[(\\d+)\\]"),
-		rxPairs = new RegExp("([\\w@\\.]+)\\s*([~><\\^\\*\\$\\!=]=?|\\?)\\s*([@\\w\\s_\\'\$\\.\\+]+)(\\s*|$)","g"),
+		rxPairs = new RegExp("([\\w@\\.]+)\\s*([~><\\^\\*\\$\\!=]=?|\\?)\\s*([@\\w\\s_\\'\$\\.\\+]+)(\\s*|$)", FLAGS),
 		rxCondition = new RegExp("(\\S+)\\[(.+)\\]"),
+		trimBefore = new RegExp("^\\s\\s*"),
+		trimAfter = new RegExp("\\s\\s*$"),
 		
 		app = Array.prototype.push,
 		apc = Array.prototype.concat,
 		
 		hidden = {
+			trim: function( s ) {
+				return s.replace(trimBefore, SPACE).replace(trimAfter, SPACE);
+			},
 			toArray: function(o) {
 				return o instanceof Array? o : (o === undef || o === null) ? []:[o];
 			},
@@ -58,7 +66,7 @@
 						
 						var evalStr, isMatch, subset = data[token], elem;
 						
-						if($.isArray(subset)) {
+						if(subset instanceof Array) {
 							temp = [];
 							//Second loop here is faster than recursive call
 							for(i = 0, l = subset.length; l > i; i++) {
@@ -111,7 +119,7 @@
 			testPairs: function(left, right, operator, fn) {
 				var out = FALSE, 
 					leftVal = left.indexOf(PERIOD) !== -1 ? hidden.traverse(left, null, this) : this[left],
-					pairs = hidden.matchTypes(leftVal, $.trim(right));
+					pairs = hidden.matchTypes(leftVal, trim(right));
 				switch(operator) {
 					case "=": out = (pairs.left === pairs.right); break;
 					case "==": out = (pairs.left === pairs.right); break;
@@ -124,7 +132,7 @@
 					case "~=": out = ((pairs.left+'').toLowerCase() === (pairs.right+'').toLowerCase()); break;
 					case "$=": out = new RegExp(pairs.right+"$", "i").test(pairs.left); break;
 					case "*=": out = (pairs.left+'').indexOf(pairs.right)!==-1; break;
-					case "?": if($.isFunction(fn)) { out = fn.call(this, left, right); } break;
+					case "?": if(typeof(fn) === FUNCTION) { out = fn.call(this, left, right); } break;
 				}
 				return out;
 			},
@@ -183,4 +191,4 @@
 	};
 
 	window.jPath = window.jPath || module;
-})(document, Array, jQuery);
+})(document, Array);
