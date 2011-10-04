@@ -1,5 +1,5 @@
 //jpath.js - is a library that allows filtering of JSON data based on pattern-like expression
-(function(document, Array, undef) {	
+(function(Array, undef) {	
 	var 
 		TRUE = !0,
 		FALSE = !1,
@@ -155,40 +155,55 @@
 	}
 	
 	JPath.prototype = {
+		//Sets JSON object source on the fly
 		from: function(obj) {
 			this.data = obj;
 			return this;
 		},
+		//Returns the first element value of the search
 		first: function(){
 			return this.selection.length ? this.selection[0] : null;		
 		},
+		//Returns the last element value of the search
 		last:function(){
 			return this.selection.length ? this.selection.slice(-1)[0] : null;	
 		},
+		//Returns an exact element value specified by index position
 		eq: function(idx) {
 			return this.selection.length ? this.selection[idx] : null;	
 		},
+		//Performs a search on the JSON object
 		select:function(pattern, cfn, obj){
 			this.selection = hidden.merge.apply(this, arguments);
 			return this;
 		},
+		//Appends result of additional search to original search result
 		and: function(pattern) {
 			this.selection = this.selection.concat(hidden.merge.apply(this, arguments));
 			return this;
 		},
+		//Returns search results as an Array
 		val: function() {
 			return this.selection;	
 		}
 	};
 	
+	//Returns an insance if JPath object
+	//@obj - JSON object
+	//@pattern - <String> search pattern
+	//@cfn - <Function> custom compare function. This function has two input arguments: @left, @right
 	module.select = function(obj, pattern, cfn) {
 		return JPath(obj).select(pattern, null, cfn);
 	};
 
-	//Backwards compatibility 1.0
+	//Returns a result of the selection <Array>
+	//WARNING: This function returns references to the values contained in JSON object, so if you modify them they will affect your JSON object.
+	//@obj - JSON object
+	//@pattern - <String> search pattern
+	//@cfn - <Function> custom compare function. This function has two input arguments: @left, @right
 	module.filter = function(obj, pattern, cfn) {
 		return JPath(obj).select(pattern, null, cfn).val();
 	};
 
 	window.jPath = window.jPath || module;
-})(document, Array);
+})(Array);
