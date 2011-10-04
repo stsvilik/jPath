@@ -119,7 +119,7 @@
 			testPairs: function(left, right, operator, fn) {
 				var out = FALSE, 
 					leftVal = left.indexOf(PERIOD) !== -1 ? hidden.traverse(left, null, this) : this[left],
-					pairs = hidden.matchTypes(leftVal, trim(right));
+					pairs = hidden.matchTypes(leftVal, hidden.trim(right));
 				switch(operator) {
 					case "=": out = (pairs.left === pairs.right); break;
 					case "==": out = (pairs.left === pairs.right); break;
