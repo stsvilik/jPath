@@ -3,12 +3,12 @@
 	var 
 		TRUE = !0,
 		FALSE = !1,
-		UNDEF = "undefined",
 		STRING = "string",
 		FUNCTION = "function",
 		PERIOD = ".",
 		SPACE = '',
 		FLAGS = 'g',
+		NULL = null,
 		
 		rxTokens = new RegExp("([A-Za-z0-9_\\*@]+(?:\\[.+?\\])?)", FLAGS),
 		rxIndex = new RegExp("(\\S+)\\[(\\d+)\\]"),
@@ -25,7 +25,7 @@
 				return s.replace(trimBefore, SPACE).replace(trimAfter, SPACE);
 			},
 			toArray: function(o) {
-				return o instanceof Array? o : (o === undef || o === null) ? []:[o];
+				return o instanceof Array? o : (o === undef || o === NULL) ? []:[o];
 			},
 			traverse: function(pattern, cfn, obj){
 				var out, data = (obj || this.data), temp, tokens, token, idxToken, index, expToken, condition, tail, self = arguments.callee, found, i, j, l;
@@ -40,25 +40,25 @@
 						temp = [];
 						for(i = 0, l = data.length; l > i; i++) {
 							j = data[i];
-							found = self.apply(this, [token, null, j]);
+							found = self.apply(this, [token, NULL, j]);
 							if(((found instanceof Array) && found.length) || found !== undef) {
 								app.apply(temp, [found]);
 							}
 						}
 						if(temp.length) {
-							return tail ? self.apply(this, [tail, null, temp]) : temp;
+							return tail ? self.apply(this, [tail, NULL, temp]) : temp;
 						} else {
 							return;	
 						}
 					} else if(token === "*") {
-						return tail ? self.apply(this, [tail, null, data]) : data;
+						return tail ? self.apply(this, [tail, NULL, data]) : data;
 					} else if(data[token] !== undef) {
-						return tail ? self.apply(this, [tail, null, data[token]]) : data[token];
+						return tail ? self.apply(this, [tail, NULL, data[token]]) : data[token];
 					} else if( rxIndex.test(token) ) {
 						idxToken = token.match(rxIndex);
 						token = idxToken[1];
 						index = +idxToken[2];
-						return tail ? self.apply(this, [tail, null, data[token][index]]) : data[token][index];
+						return tail ? self.apply(this, [tail, NULL, data[token][index]]) : data[token][index];
 					} else if( rxCondition.test(token) ) {
 						expToken = token.match(rxCondition);
 						token = expToken[1];
@@ -82,7 +82,7 @@
 								}
 							}
 							if(temp.length) {
-								return tail ? self.apply(this, [tail, null, temp]) : temp;
+								return tail ? self.apply(this, [tail, NULL, temp]) : temp;
 							} else {
 								return;	
 							}
@@ -95,7 +95,7 @@
 							//Evaluate expression
 							isMatch = eval(evalStr);
 							if(isMatch) {
-								return tail ? self.apply(this, [tail, null, elem]) : elem;
+								return tail ? self.apply(this, [tail, NULL, elem]) : elem;
 							}
 						}
 					}
@@ -112,13 +112,13 @@
 					case "date": _b = new Date(b).valueOf(); _a = a.valueOf(); break;
 					default: _b = b;
 				}
-				if(b === "null") { _b = null; }
+				if(b === "null") { _b = NULL; }
 				if(b === "undefined") { _b = void(0); }
 				return {left:(_a||a), right:_b};
 			},
 			testPairs: function(left, right, operator, fn) {
 				var out = FALSE, 
-					leftVal = left.indexOf(PERIOD) !== -1 ? hidden.traverse(left, null, this) : this[left],
+					leftVal = left.indexOf(PERIOD) !== -1 ? hidden.traverse(left, NULL, this) : this[left],
 					pairs = hidden.matchTypes(leftVal, hidden.trim(right));
 				switch(operator) {
 					case "=": out = (pairs.left === pairs.right); break;
@@ -150,7 +150,7 @@
 		if(!(this instanceof JPath)) {
 			return new JPath(obj);	
 		}
-		this.data = obj || null;
+		this.data = obj || NULL;
 		this.selection = [];
 	}
 	
@@ -162,22 +162,22 @@
 		},
 		//Returns the first element value of the search
 		first: function(){
-			return this.selection.length ? this.selection[0] : null;		
+			return this.selection.length ? this.selection[0] : NULL;		
 		},
 		//Returns the last element value of the search
 		last:function(){
-			return this.selection.length ? this.selection.slice(-1)[0] : null;	
+			return this.selection.length ? this.selection.slice(-1)[0] : NULL;	
 		},
 		//Returns an exact element value specified by index position
 		eq: function(idx) {
-			return this.selection.length ? this.selection[idx] : null;	
+			return this.selection.length ? this.selection[idx] : NULL;	
 		},
 		//Performs a search on the JSON object
 		select:function(pattern, cfn, obj){
 			this.selection = hidden.merge.apply(this, arguments);
 			return this;
 		},
-		//Appends result of additional search to original search result
+		//Appends result of additional search to original search results
 		and: function(pattern) {
 			this.selection = this.selection.concat(hidden.merge.apply(this, arguments));
 			return this;
@@ -193,7 +193,7 @@
 	//@pattern - <String> search pattern
 	//@cfn - <Function> custom compare function. This function has two input arguments: @left, @right
 	module.select = function(obj, pattern, cfn) {
-		return JPath(obj).select(pattern, null, cfn);
+		return JPath(obj).select(pattern, NULL, cfn);
 	};
 
 	//Returns a result of the selection <Array>
@@ -202,7 +202,7 @@
 	//@pattern - <String> search pattern
 	//@cfn - <Function> custom compare function. This function has two input arguments: @left, @right
 	module.filter = function(obj, pattern, cfn) {
-		return JPath(obj).select(pattern, null, cfn).val();
+		return JPath(obj).select(pattern, NULL, cfn).val();
 	};
 
 	window.jPath = window.jPath || module;
