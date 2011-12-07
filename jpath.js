@@ -10,9 +10,9 @@
 		FLAGS = 'g',
 		NULL = null,
 		
-		rxTokens = new RegExp("([A-Za-z0-9_\\*@]+(?:\\[.+?\\])?)", FLAGS),
+		rxTokens = new RegExp("([A-Za-z0-9_\\*@\\$]+(?:\\[.+?\\])?)", FLAGS),
 		rxIndex = new RegExp("(\\S+)\\[(\\d+)\\]"),
-		rxPairs = new RegExp("([\\w@\\.]+)\\s*([~><\\^\\*\\$\\!=]=?|\\?)\\s*([@\\w\\s_\\'\$\\.\\+]+)(\\s*|$)", FLAGS),
+		rxPairs = new RegExp("([\\w@\\.]+)\\s*([~><\\^\\*\\$\\!=]=?|\\?)\\s*([@\\w\\s_\\'\$\\.\\+-]+)(\\s*|$)", FLAGS),
 		rxCondition = new RegExp("(\\S+)\\[(.+)\\]"),
 		trimBefore = new RegExp("^\\s\\s*"),
 		trimAfter = new RegExp("\\s\\s*$"),
