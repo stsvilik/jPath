@@ -72,23 +72,23 @@ filter( json, expression [,cust_compare_fn] ) - performs a traversal and returns
 
 1. Using Custom compare logic
 
-    jPath.filter( JSON, "foo[bar ? test]", function(left, right) {
-	    //left - is the value of the data member bar inside foo
-        //right - woudl be equal to "test"
-	    return left + "blah" == right; //Cusom validation
-    });
+        jPath.filter( JSON, "foo[bar ? test]", function(left, right) {
+            //left - is the value of the data member bar inside foo
+            //right - woudl be equal to "test"
+            return left + "blah" == right; //Cusom validation
+        });
 
 2. Joining multiple filtering results
 
-jPath.select( JSON, "foo[bar == 1]").and( "foo2[bar == 2]").val(); //This example adds to the selection a different pattern evaluation
+    jPath.select( JSON, "foo[bar == 1]").and( "foo2[bar == 2]").val(); //This example adds to the selection a different pattern evaluation
 
 Example above could also be written like so:
 
-jPath.select( JSON, "foo[bar == 1 && bar == 2]").val();
+    jPath.select( JSON, "foo[bar == 1 && bar == 2]").val();
 
 If we want to combine results from different JSON objects, than we would do something like so:
 
-jPath.select( JSON, "foo[bar == 1]").from(JSON2).and( "foo2[bar == 2]").val(); //from() sets a different source of data
+    jPath.select( JSON, "foo[bar == 1]").from(JSON2).and( "foo2[bar == 2]").val(); //from() sets a different source of data
 
 3. Accessing array elements by index
 
