@@ -87,3 +87,7 @@ jPath.select( JSON, "foo[bar == 1 && bar == 2]").val();
 If we want to combine results from different JSON objects, than we would do something like so:
 
 jPath.select( JSON, "foo[bar == 1]").from(JSON2).and( "foo2[bar == 2]").val(); //from() sets a different source of data
+
+3. Accessing array elements by index
+
+Ex. jPath.select({myArray:[1,2,3,4,5]}, "myArray(0)");
