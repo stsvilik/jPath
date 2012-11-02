@@ -1,5 +1,5 @@
 Can't get deeper than jPath does
-====
+---
 Well folks, JPath came about the same time I got pissed-off at heavily nested JSON objects.
 It was both lengthy and unreadable to write a whole line of "If" checks just to get data
 nested 4 levels deep inside a JSON object. 
@@ -8,13 +8,13 @@ JPath is a traverse tool that allows XPATH-like navigation within a
 JSON structure and a little more. JPath also uses pattern syntax more familiar to JavaScript developers in the sense
 that instead of "/" to navigate nodes I would use "." (dot) notation.
 
-How does it work?
-====
+#### How does it work?
+
 jPath is basically a recursive traverser that evaluates an expression you provide and finds each piece of data you
 specify one step (recursion) at a time.
 
-Does it support conditions?
-====
+#### Does it support conditions?
+
 Just like XPATH, it does support conditional filtering, where you basically specify what nodes you want to retrieve
 based on certain condition. Conditional queries work by comparing data members to value you provide inside your
 expression (it does not do comparing between data members). So for example if you have an array of objects and you want
@@ -40,17 +40,16 @@ type.
 If your value contains a space, you can enclose your value in single quotes. (i.e. [foo == 'hello world']) Normally you
 don't have to do that.
 
-What else can it do?
-====
+#### What else can it do?
+
 One thing to note is that there is a special "*" selector that references an object itself, so you may use it lets say
 against an array of objects (i.e. *[ foo == bah] - will return rows where member foo has value bah). You can also have
 "deep" value comparing (i.e. obj[ foo.bah == "wow"] ). Now that you can do deep value comparing, you can also check for
 native properties such as "length" (i.e. obj( [ name.length > 3 ]) ).
 
 API
-===
-Classes:
-====
+---
+#### Classes:
 
 JPath
 - constructor( json ) - initializes JPath instance
@@ -64,21 +63,20 @@ JPath
 - and( pattern ) - this method allows combining of multiple search results.
 - val() - <Array> returns the final value of selection
 
-Methods
-====
+#### Methods
+
 select( json, expression [,cust_compare_fn] ) - performs a traversal and returns you an instance of JPath object
 filter( json, expression [,cust_compare_fn] ) - performs a traversal and returns a value
 
-How to's
-====
+#### How to's
+
 1. Using Custom compare logic
 
-jPath.filter( JSON, "foo[bar ? test]", function(left, right) {
-	//left - is the value of the data member bar inside foo
-    //right - woudl be equal to "test"
-    
-	return left + "blah" == right; //Cusom validation
-});
+    jPath.filter( JSON, "foo[bar ? test]", function(left, right) {
+	    //left - is the value of the data member bar inside foo
+        //right - woudl be equal to "test"
+	    return left + "blah" == right; //Cusom validation
+    });
 
 2. Joining multiple filtering results
 
@@ -94,4 +92,5 @@ jPath.select( JSON, "foo[bar == 1]").from(JSON2).and( "foo2[bar == 2]").val(); /
 
 3. Accessing array elements by index
 
-Ex. jPath.select({myArray:[1,2,3,4,5]}, "myArray(0)");
+Ex. 
+    jPath.select({myArray:[1,2,3,4,5]}, "myArray(0)");
