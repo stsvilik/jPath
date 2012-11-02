@@ -21,17 +21,18 @@ expression (it does not do comparing between data members). So for example if yo
 to get only those objects where member foo = 1, you would write "obj[foo == 1]", more examples later. It supports a
 wide range of evaluations here is the list:
 
-"==" | "=" - compares data member for equality
-"!=" - compares data member inequality
-"<" - less than
-">" - greater than
-"<=" - less or equal
-">=" - greater or equal
-"~=" - equal ignoring case
-"^=" - starts with
-"$=" - ends with
-"*=" - contains a string anywhere inside
-"?" - allows you to pass a custom evaluation function
+- "==" | "=" - compares data member for equality
+- "!=" - compares data member inequality
+- "<" - less than
+- ">" - greater than
+- "<=" - less or equal
+- ">=" - greater or equal
+- "~=" - equal ignoring case
+- "^=" - starts with
+- "$=" - ends with
+- "*=" - contains a string anywhere inside
+- "?" - allows you to pass a custom evaluation function
+
 During the comparing stage, all values are type matched (coerced) to the types of values you're comparing against. 
 What this means is that you always compare numbers against numbers and not strings, and same goes for every other data
 type.
