@@ -80,16 +80,16 @@ filter( json, expression [,cust_compare_fn] ) - performs a traversal and returns
 
 2. Joining multiple filtering results
 
-    jPath.select( JSON, "foo[bar == 1]").and( "foo2[bar == 2]").val(); //This example adds to the selection a different pattern evaluation
+        jPath.select( JSON, "foo[bar == 1]").and( "foo2[bar == 2]").val(); //This example adds to the selection a different pattern evaluation
 
     //Example above could also be written like so:
 
-    jPath.select( JSON, "foo[bar == 1 && bar == 2]").val();
+        jPath.select( JSON, "foo[bar == 1 && bar == 2]").val();
 
 3. If we want to combine results from different JSON objects, than we would do something like so:
 
-    jPath.select( JSON, "foo[bar == 1]").from(JSON2).and( "foo2[bar == 2]").val(); //from() sets a different source of data
+        jPath.select( JSON, "foo[bar == 1]").from(JSON2).and( "foo2[bar == 2]").val(); //from() sets a different source of data
 
 4. Accessing array elements by index
 
-    jPath.select({myArray:[1,2,3,4,5]}, "myArray(0)");
+        jPath.select({myArray:[1,2,3,4,5]}, "myArray(0)");
