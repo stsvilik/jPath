@@ -92,5 +92,4 @@ If we want to combine results from different JSON objects, than we would do some
 
 3. Accessing array elements by index
 
-Ex. 
     jPath.select({myArray:[1,2,3,4,5]}, "myArray(0)");
