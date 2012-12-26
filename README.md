@@ -97,6 +97,7 @@ filter( json, expression [,cust_compare_fn] ) - performs a traversal and returns
 5. Using parenteces to group logic
 
     //Using logical groups is valid and evaluated properly
+
         jPath.filter(obj, "*[(a==b || a == c) && c == d]");
 
 #### Unit Test
