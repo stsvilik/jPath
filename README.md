@@ -94,7 +94,7 @@ filter( json, expression [,cust_compare_fn] ) - performs a traversal and returns
 
     //Example above could also be written like so:
 
-        jPath.select( JSON, "foo[bar == 1 && bar == 2]").val();
+        jPath.select( JSON, "foo[bar == 1 || bar == 2]").val();
 
 3. If we want to combine results from different JSON objects, than we would do something like so:
 
