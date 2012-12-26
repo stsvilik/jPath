@@ -1,13 +1,15 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>jPath Test</title>
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.js"></script>
-<script src="https://raw.github.com/stsvilik/jPath/master/jpath.js"></script>
-<script>
-
-
+  <meta charset="utf-8">
+  <title>QUnit Example</title>
+  <link rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.10.0.css">
+</head>
+<body>
+  <div id="qunit"></div>
+  <script src="http://code.jquery.com/qunit/qunit-1.10.0.js"></script>
+  <script src="jpath.js"></script>
+  <script type="text/javascript">
 var obj = {
 		items: [
 			{a:1, foo:"test", b:true},
@@ -15,56 +17,83 @@ var obj = {
 			{a:3, foo:"test2", b:false},
 			{a:4, foo:"test3", b:true}
 		],
-		
 		items2: [
 			{names:[
-						{name:"Sam"},
-						{name:"John"},
-						{name:"Dave"},
-						{name:"Bob"}
-				   ], start:1},
+					{name:"Sam"},
+					{name:"John"},
+					{name:"Dave"},
+					{name:"Bob"}
+			], start:1},
 			{names:[
-						{name:"Dave"},
-						{name:"Joe"},
-						{name:"Jon"},
-						{name:"Steve"}
-				   ], start:2}
+					{name:"Dave"},
+					{name:"Joe"},
+					{name:"Jon"},
+					{name:"Steve"}
+			], start:2}
+		],
+		books: [
+			{ title: 'Merry Christmas' },
+			{ title: 'Pride & Heritage' },
+			{ title: 'Once ^on a time'},
+			{ title: '#1 Story' },
+			{ title: 'Escape from island\'s'}
+		],
+		other: [
+			{ foo:'buzz', buzz:null }
 		]
 	};
-	
-	
-	
-		//debugger;
-		
-		console.log( "get items", jPath.filter(obj, "items"));
-		console.log( "get self reference (*)", jPath.filter(obj, "*"));
-		console.log( "get *.items", jPath.filter(obj, "*.items"));
-		console.log( "get item by index (items[0])", jPath.filter(obj, "items[0]"));
-		console.log( "get item w/condition (items[a > 2])", jPath.filter(obj, "items[a > 2]"));
-		
-		console.log( "get children of an array (items2[0].names.name)", jPath.filter(obj, "items2[0].names.name"));
-		
-		console.log( "get children of an arrays (items2.names.name)", jPath.filter(obj, "items2.names.name"));
-		
-		console.log( "get children w/ condition (items2.names[name == Sam])", jPath.filter(obj, "items2.names[name == Sam]"));
-		
-		console.log( "get children property w/ condition (items2.names[name == Sam].name) ", jPath.filter(obj, "items2.names[name == Sam].name"));
-		
-		console.time("Filtering 1000");
-		for(var i = 0, j = 1000; j > i; i++) {
-			jPath.select(obj, "items2.names[name == Sam].name");
-		}
-		console.timeEnd("Filtering 1000");
-		
-		console.log( "using native properties in condition", 
-			jPath.select(obj, "items2.names[(name.length > 2) && (name == Sam)]")
-		);
-		
-		console.log( "using undefined in condition",
-			jPath.filter(obj, "items2[names != undefined]")
-		);
-	
 
+
+	test("Supported patterns", function(){
+		deepEqual(obj.items, jPath.filter(obj, "items"), 'jPath.filter(obj, "items")');		//console.log( "get items", jPath.filter(obj, "items"));
+		deepEqual([obj], jPath.filter(obj, "*"), 'jPath.filter(obj, "*")');
+		deepEqual(obj.items, jPath.filter(obj, "*.items"), 'jPath.filter(obj, "*.items")');		//console.log( "get *.items", jPath.filter(obj, "*.items"));
+		deepEqual(obj.items.slice(0,1), jPath.filter(obj, "items(0)"),'jPath.filter(obj, "items(0)")');
+		deepEqual([{a:3, foo:"test2", b:false}, {a:4, foo:"test3", b:true}], jPath.filter(obj, "items[a > 2]"), 'jPath.filter(obj, "items[a > 2]")');		//console.log( "get item w/condition (items[a > 2])", jPath.filter(obj, "items[a > 2]"));
+		deepEqual(["Sam","John","Dave","Bob"], jPath.filter(obj, "items2(0).names.name"), 'jPath.filter(obj, "items2(0).names.name")');
+		deepEqual(["Sam","John","Dave","Bob", "Dave","Joe","Jon","Steve"], jPath.filter(obj, "items2.names.name"),'jPath.filter(obj, "items2.names.name")');		//console.log( "get children of an arrays (items2.names.name)", jPath.filter(obj, "items2.names.name"));
+		deepEqual([{name:"Sam"}], jPath.filter(obj, "items2.names[name == Sam]"), 'jPath.filter(obj, "items2.names[name == Sam]")');
+		deepEqual([{name:"Sam"}], jPath.filter(obj, "items2.names[name == 'Sam']"), 'jPath.filter(obj, "items2.names[name == \'Sam\']")');		//console.log( "get children w/ condition (items2.names[name == Sam])", jPath.filter(obj, "items2.names[name == Sam]"));
+		deepEqual(["Sam"], jPath.filter(obj, "items2.names[name == Sam].name"), 'jPath.filter(obj, "items2.names[name == Sam].name")');
+		deepEqual(["Sam", "Jon"], jPath.filter(obj, "items2.names[name == Sam || name == Jon].name"), 'jPath.filter(obj, "items2.names[name == Sam || name == Jon].name")');		//Using and in the condition
+		deepEqual(["Sam"], jPath.filter(obj, "items2.names[name == Sam && name.length == 3].name"), 'jPath.filter(obj, "items2.names[name == Sam && name.length == 3].name")');
+		deepEqual(["Sam", "Jon"], jPath.filter(obj, "items2.names[(name == Sam && name.length == 3) || name == Jon].name"), 'jPath.filter(obj, "items2.names[(name == Sam && name.length == 3) || name == Jon].name")');
+	});
+	test("Condition tests", function(){
+		deepEqual([3,4], jPath.filter(obj, "items[a > 2].a"), 'jPath.filter(obj, "items[a > 2].a")');
+		deepEqual([2, 3,4], jPath.filter(obj, "items[a >= 2].a"), 'jPath.filter(obj, "items[a >= 2].a")');
+		deepEqual([1], jPath.filter(obj, "items[a < 2].a"), 'jPath.filter(obj, "items[a < 2].a")');
+		deepEqual([1,2], jPath.filter(obj, "items[a <= 2].a"), 'jPath.filter(obj, "items[a <= 2].a")');
+		deepEqual([2], jPath.filter(obj, "items[a == 2].a"), 'jPath.filter(obj, "items[a == 2].a")');
+		deepEqual([1,3,4], jPath.filter(obj, "items[a != 2].a"), 'jPath.filter(obj, "items[a != 2].a")');
+		deepEqual(["Sam", "Steve"], jPath.filter(obj, "items2.names[name ^= S].name"), 'jPath.filter(obj, "items2.names[name ^= S].name")');
+		deepEqual(["Dave", "Dave", "Joe", "Steve"], jPath.filter(obj, "items2.names[name $= e].name"), 'jPath.filter(obj, "items2.names[name $= e].name")');
+		deepEqual(["Sam"], jPath.filter(obj, "items2.names[name ~= sam].name"), 'jPath.filter(obj, "items2.names[name ~= sam].name")');
+		deepEqual(["John"], jPath.filter(obj, "items2.names[name *= oh].name"), 'jPath.filter(obj, "items2.names[name *= oh].name")');
+		deepEqual(["Dave", "Dave"], jPath.filter(obj, "items2.names[name ? Dave].name", function(l,r){ return l === r; }), "Custom compare function w/ ? as operator");
+	});
+	test("Complex value matching", function(){
+		deepEqual([{ title: 'Merry Christmas' }], jPath.filter(obj, "books[title == 'Merry Christmas']"), 'jPath.filter(obj, "books[title == \'Merry Christmas\']")');
+		deepEqual([{ title: 'Pride & Heritage' }], jPath.filter(obj, "books[title == 'Pride & Heritage']"), 'jPath.filter(obj, "books[title == \'Pride & Heritage\']")');
+		deepEqual([{ title: 'Once ^on a time' }], jPath.filter(obj, "books[title *= '^']"), 'jPath.filter(obj, "books[title *= \'^\']")');
+		deepEqual([{ title: '#1 Story' }], jPath.filter(obj, "books[title ^= '#']"), 'jPath.filter(obj, "books[title ^= \'#\']")');
+		deepEqual([{ title: 'Escape from island\'s' }], jPath.filter(obj, 'books[title *= "\'"]'), 'jPath.filter(obj, \'books[title *= "\\\'"]\')');
+		deepEqual([{ title: 'Escape from island\'s' }], jPath.filter(obj, 'books[title == "Escape from island\'s"]'), 'jPath.filter(obj, \'books[title *= "Escape from island\\\'s"]\')');
+		deepEqual([{ title: 'Escape from island\'s' }], jPath.filter(obj, "books[title == 'Escape from island\\\'s']"), 'jPath.filter(obj, "books[title == \'Escape from island\\\\\\\'s\']")');
+	});
+	test("Reserved words matching", function(){
+		deepEqual([{foo:'buzz', buzz:null}], jPath.filter(obj, 'other[foo != undefined]'), 'jPath.filter(obj, "other[foo != undefined]")');
+		deepEqual([{foo:'buzz', buzz:null}], jPath.filter(obj, 'other[buzz == null]'), 'jPath.filter(obj, "other[buzz == null]")');
+		deepEqual([{foo:'buzz', buzz:null}], jPath.filter(obj, 'other[fake == undefined]'), 'jPath.filter(obj, "other[fake == undefined]")');
+	});
+	test("Using select and native jPath methods", function(){
+		deepEqual(obj.items, jPath.select(obj, "*.items").val(), 'jPath.select(obj, "*.items").val()');
+		deepEqual({a:1, foo:"test", b:true}, jPath.select(obj, "*.items").first(), 'jPath.select(obj, "*.items").first()');
+		deepEqual({a:4, foo:"test3", b:true}, jPath.select(obj, "*.items").last(), 'jPath.select(obj, "*.items").last()');
+		deepEqual([{a:1, foo:"test", b:true},{a:4, foo:"test3", b:true}], jPath.select(obj, "items[a == 1]").and("items[a == 4]").val(), 'jPath.select(obj, "items[a == 1]").and("items[a == 4]").val()');
+		deepEqual({a:1, foo:"test", b:true}, jPath.select(obj, "*.items").eq(0), 'jPath.select(obj, "*.items").eq(0)');
+		deepEqual([{a:1, foo:"test", b:true},{ title: 'Merry Christmas' }], jPath.select(obj.items, "*[a == 1]").from(obj.books).and("*[title == 'Merry Christmas']").val(), 'jPath.select(obj.items, "*[a == 1]").from(obj.books).and("*[title == \'Merry Christmas\']").val()');
+	});
 </script>
 </head>
 
