@@ -95,7 +95,8 @@ filter( json, expression [,cust_compare_fn] ) - performs a traversal and returns
         jPath.select({myArray:[1,2,3,4,5]}, "myArray(0)");
 
 5. Using parenteces to group logic
-        //Using logical groups is valid and evaluated properly
+
+    //Using logical groups is valid and evaluated properly
         jPath.filter(obj, "*[(a==b || a == c) && c == d]");
 
 #### Unit Test
