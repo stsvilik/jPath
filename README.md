@@ -6,7 +6,7 @@ nested 4 levels deep inside a JSON object.
 
 JPath is a traverse tool that allows XPATH-like navigation within a
 JSON structure and a little more. JPath also uses pattern syntax more familiar to JavaScript developers in the sense
-that instead of "/" to navigate nodes I would use "." (dot) notation.
+that instead of "/" to navigate nodes I would use "." (dot) notation (it supports '/' as well if you're old-fashioned).
 
 #### How does it work?
 
@@ -38,7 +38,7 @@ What this means is that you always compare numbers against numbers and not strin
 type.
 
 If your value contains a space, you can enclose your value in single or double quotes. (i.e. [foo == 'hello world']) Normally you
-don't have to do that. If youre value contains quotes, you can escape them using double slashes (i.e [foo == 'Bob\\\'s']).
+don't have to do that. If your value contains quotes, you can escape them using double slashes (i.e [foo == 'Bob\\\'s']).
 
 #### What else can it do?
 
@@ -46,6 +46,16 @@ One thing to note is that there is a special "*" selector that references an obj
 against an array of objects (i.e. *[ foo == bah] - will return rows where member foo has value bah). You can also have
 "deep" value comparing (i.e. obj[ foo.bah == "wow"] ). Now that you can do deep value comparing, you can also check for
 native properties such as "length" (i.e. obj( [ name.length > 3 ]) ).
+
+#### Using reserved words to compare
+
+JPath supports the use of 'null' and 'undefined' in conditions.
+So if you're traversing an array of objects where your object may NOT contain a member you can always write *[foo == undefined].
+
+#### What is not here
+
+- JPath does not support "select-all" syntax of XPATH that allowed you to find something anywhere in the XML document. This is too expensive in JavaScript.
+- JPath does not natively supports conditions that compare one data memeber against another, but this can be achieved using "a ? b" and the use of "this" in the custom comparator.
 
 API
 ---
@@ -95,8 +105,6 @@ filter( json, expression [,cust_compare_fn] ) - performs a traversal and returns
         jPath.select({myArray:[1,2,3,4,5]}, "myArray(0)");
 
 5. Using parenteces to group logic
-
-    //Using logical groups is valid and evaluated properly
 
         jPath.filter(obj, "*[(a==b || a == c) && c == d]");
 
