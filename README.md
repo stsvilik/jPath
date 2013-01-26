@@ -57,26 +57,44 @@ So if you're traversing an array of objects where your object may NOT contain a 
 - JPath does not support "select-all" syntax of XPATH that allowed you to find something anywhere in the XML document. This is too expensive in JavaScript.
 - JPath does not natively supports conditions that compare one data memeber against another, but this can be achieved using "a ? b" and the use of "this" in the custom comparator.
 
+#### Working with Arrays
+
+Working with Arrays requires a special character to reference Array itself in the expression, for this we'll use "\*".
+
+#### Example:
+
+    var people = [
+        {name: "John", age:26, gender:"male"},
+        {name: "Steve", age:24, gender:"male"},
+        {name: "Susan", age:22, gender:"female"},
+        {name: "Linda", age:30, gender:"female"},
+        {name: "Adam", age:32, gender:"male"}
+    ];
+    var match = jpath.filter(people, "*[gender==female]");
+
+    //Output:
+    [{name: "Susan", age:22, gender:"female"},{name: "Linda", age:30, gender:"female"}]
+
 API
 ---
 #### Classes:
 
-JPath
-- constructor( json ) - initializes JPath instance
-- data - local copy of json object you passed in during init.
-- selection - cached result of the selection
-- from( json ) - this method allows you to change json source
-- first() - returns the first result value
-- last() - returns the last result value
-- eq( index ) - returns result value by index
-- select( pattern [, custom_compare_function ]) - performs recursive search
-- and( pattern ) - this method allows combining of multiple search results.
-- val() - <Array> returns the final value of selection
+* JPath
+    * constructor( json ) - initializes JPath instance
+    * data - local copy of json object you passed in during init.
+    * selection - cached result of the selection
+    * from( json ) - this method allows you to change json source
+    * first() - returns the first result value
+    * last() - returns the last result value
+    * eq( index ) - returns result value by index
+    * select( pattern [, custom_compare_function ]) - performs recursive search
+    * and( pattern ) - this method allows combining of multiple search results.
+    * val() - {Array} returns the final value of selection
 
 #### Methods
 
-select( json, expression [,cust_compare_fn] ) - performs a traversal and returns you an instance of JPath object
-filter( json, expression [,cust_compare_fn] ) - performs a traversal and returns a value
+* select( json, expression [,cust_compare_fn] ) - performs a traversal and returns you an instance of JPath object
+* filter( json, expression [,cust_compare_fn] ) - performs a traversal and returns a value
 
 #### Examples
 
@@ -92,7 +110,7 @@ filter( json, expression [,cust_compare_fn] ) - performs a traversal and returns
 
         jPath.select( JSON, "foo[bar == 1]").and( "foo2[bar == 2]").val(); //This example adds to the selection a different pattern evaluation
 
-    //Example above could also be written like so:
+    Example above could also be written like so:
 
         jPath.select( JSON, "foo[bar == 1 || bar == 2]").val();
 
