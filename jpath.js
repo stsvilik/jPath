@@ -7,7 +7,6 @@
 		FUNCTION = "function",
 		PERIOD = ".",
 		EMPTY = '',
-		FLAGS = 'g',
 		NULL = null,
 
 		rxTokens = /([A-Za-z0-9_\*@\$\(\)]+(?:\[.+?\])?)/g,
@@ -19,18 +18,43 @@
 
 		app = Array.prototype.push,
 		apc = Array.prototype.concat,
-
+		/**
+		 * Private API
+		 * @type {Object}
+		 */
 		hidden = {
+			/**
+			 * Trims starting and trailing spaces
+			 * @param  {String} s Any string
+			 * @return {String}   Trimmed string
+			 */
 			trim: function(s) {
 				var str = s.match(rxTrim);
 				return str ? str[0] : EMPTY;
 			},
+			/**
+			 * Function that strips wrapping quotes
+			 * @param  {String} s String that contains quotes around a word
+			 * @return {String}   Word without quotes
+			 */
 			qtrim: function(s) {
 				return((!s.indexOf("'") || !s.indexOf('"')) && (s.slice(-1) === "'" || s.slice(-1) === '"')) ? s.slice(1, -1) : s;
 			},
+			/**
+			 * Converts an object into an Array if it isn't
+			 * @param  {Object} o 	Any type of object
+			 * @return {Array}   	Array of an object or an empty Array
+			 */
 			toArray: function(o) {
 				return o instanceof Array ? o : (o === undef || o === NULL) ? [] : [o];
 			},
+			/**
+			 * Recursive function that walks through an object, extracting pattern matches
+			 * @param  {String} pattern 	jPath expression
+			 * @param  {Function} cfn     	Callback function used to run a custom comparisson
+			 * @param  {Object|Array} obj   An object or an Array that will be scanned for matches
+			 * @return {Array}         		Matching results
+			 */
 			traverse: function(pattern, cfn, obj) {
 				var out, data = (obj || this.data),
 					temp, tokens, token, idxToken, index, expToken, condition, tail, self = arguments.callee,
@@ -114,7 +138,7 @@
 			matchTypes: function(a, b) {
 				var _a, _b;
 				switch(typeof(a)) {
-				case "string":
+				case STRING:
 					_b = b + EMPTY;
 					break;
 				case "boolean":
@@ -131,7 +155,7 @@
 					_b = b;
 				}
 				if(b === "null") {
-					_b = null;
+					_b = NULL;
 				}
 				if(b === "undefined") {
 					_b = undef;
@@ -141,6 +165,7 @@
 					right: _b
 				};
 			},
+			//Condition functions
 			testPairs: (function() {
 				var conditions = {
 					"=": function(l, r) {
@@ -180,9 +205,9 @@
 
 				return function(left, right, operator, fn) {
 					var out = FALSE,
-						leftVal = left.indexOf(PERIOD) >= 0 ? hidden.traverse(left, null, this) : this[left],
+						leftVal = left.indexOf(PERIOD) >= 0 ? hidden.traverse(left, NULL, this) : this[left],
 						//We clean up r to remove wrapping quotes and escaped quotes (both single/dbl)
-						pairs = hidden.matchTypes(leftVal, hidden.trim(hidden.qtrim(right)).replace(rxEscQuote,'$1'));
+						pairs = hidden.matchTypes(leftVal, hidden.trim(hidden.qtrim(right)).replace(rxEscQuote, '$1'));
 					if(operator === "?") {
 						if(typeof(fn) === FUNCTION) {
 							out = fn.call(this, pairs.left, right);
@@ -193,6 +218,11 @@
 					return out;
 				};
 			})(),
+			/**
+			 * Merges results of sibling nodes into a single Array
+			 * @param  {String} pattern 	String pattern or results
+			 * @return {Array}         		Concatinated results
+			 */
 			merge: function(pattern) {
 				var out = [],
 					temp = hidden.toArray(pattern ? hidden.traverse.apply(this, arguments) : this.selection);
@@ -203,6 +233,10 @@
 
 		module = {};
 
+	/**
+	 * JPath Class
+	 * @param {Object|Array} obj Search subject
+	 */
 
 	function JPath(obj) {
 		if(!(this instanceof JPath)) {
@@ -213,52 +247,84 @@
 	}
 
 	JPath.prototype = {
-		//Sets JSON object source on the fly
+		/**
+		 * Sets search subject (source of data)
+		 * @param  {Object|Array} obj Search subject
+		 * @return {this}
+		 */
 		from: function(obj) {
 			this.data = obj;
 			return this;
 		},
-		//Returns the first element value of the search
+		/**
+		 * Returns a first match element
+		 * @return {Var} Any type of object located in the first element of the result Array
+		 */
 		first: function() {
 			return this.selection.length ? this.selection[0] : NULL;
 		},
-		//Returns the last element value of the search
+		/**
+		 * Returns a last match element
+		 * @return {Var} Any type of object located in the last element of the result Array
+		 */
 		last: function() {
 			return this.selection.length ? this.selection.slice(-1)[0] : NULL;
 		},
-		//Returns an exact element value specified by index position
+		/**
+		 * Returns an exact match element located at idx position
+		 * @param  {Number} idx Index
+		 * @return {Var} Any type of object located in result Array[idx]
+		 */
 		eq: function(idx) {
 			return this.selection.length ? this.selection[idx] : NULL;
 		},
-		//Performs a search on the JSON object
+		/**
+		 * Applies matching pattern to an object
+		 * @param  {String} pattern  	jPath expression
+		 * @param  {Function} cfn     	Custom comparisson function
+		 * @param  {Object|Array} obj   Search subject object
+		 * @return {this}
+		 */
 		select: function(pattern, cfn, obj) {
 			this.selection = hidden.merge.apply(this, arguments);
 			return this;
 		},
-		//Appends result of additional search to original search results
+		/**
+		 * Merges additional pattern-matching results with existing ones
+		 * @param  {String} pattern jPath expression
+		 * @return {this}
+		 */
 		and: function(pattern) {
 			this.selection = this.selection.concat(hidden.merge.apply(this, arguments));
 			return this;
 		},
-		//Returns search results as an Array
+		/**
+		 * Returns all matches
+		 * @return {Array} Returns search results as an Array
+		 */
 		val: function() {
 			return this.selection;
 		}
 	};
 
-	//Returns an insance if JPath object
-	//@obj - JSON object
-	//@pattern - <String> search pattern
-	//@cfn - <Function> custom compare function. This function has two input arguments: @left, @right
+	/**
+	 * Runs a select filter against an object and returns an instance of a JPath object
+	 * @param  {Object|Array} obj   Search subject
+	 * @param  {String} pattern 	jPath expression
+	 * @param  {Function} cfn     	Custom comparisson function (optional)
+	 * @return {JPath}         		Instance of a JPath object pre-filled with results
+	 */
 	module.select = function(obj, pattern, cfn) {
-		return JPath(obj).select(pattern, NULL, cfn);
+		return JPath(obj).select(pattern, cfn, NULL);
 	};
 
-	//Returns a result of the selection <Array>
-	//WARNING: This function returns references to the values contained in JSON object, so if you modify them they will affect your JSON object.
-	//@obj - JSON object
-	//@pattern - <String> search pattern
-	//@cfn - <Function> custom compare function. This function has two input arguments: @left, @right
+	/**
+	 * Returns results of the pattern-matching as an Array
+	 * @param  {Object|Array} obj   Search subject
+	 * @param  {String} pattern 	jPath expression
+	 * @param  {Function} cfn     	Custom comparisson function (optional)
+	 * @return {Array}         		Search results
+	 */
 	module.filter = function(obj, pattern, cfn) {
 		return JPath(obj).select(pattern, cfn, NULL).val();
 	};
