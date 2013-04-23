@@ -47,6 +47,15 @@ against an array of objects (i.e. *[ foo == bah] - will return rows where member
 "deep" value comparing (i.e. obj[ foo.bah == "wow"] ). Now that you can do deep value comparing, you can also check for
 native properties such as "length" (i.e. obj( [ name.length > 3 ]) ).
 
+#### What about primitive arrays?
+
+If you have a primitive Array such as array of strings or numbers, you can still use conditional filtering on them, just use "." to reference an item itself.
+
+##### Ex:
+
+    var primitive = ["Sam", "Steve", "John", "Joe"];
+    var result = jpath.filter(primitive, "*[. == Sam]");
+
 #### Using reserved words to compare
 
 JPath supports the use of 'null' and 'undefined' in conditions.

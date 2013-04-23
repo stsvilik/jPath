@@ -40,7 +40,8 @@ var obj = {
 		],
 		other: [
 			{ foo:'buzz', buzz:null }
-		]
+		],
+		primitive: ["Sam", "John", "Steve", "Joe"]
 	};
 
 
@@ -58,6 +59,7 @@ var obj = {
 		deepEqual(["Sam", "Jon"], jPath.filter(obj, "items2.names[name == Sam || name == Jon].name"), 'jPath.filter(obj, "items2.names[name == Sam || name == Jon].name")');		//Using and in the condition
 		deepEqual(["Sam"], jPath.filter(obj, "items2.names[name == Sam && name.length == 3].name"), 'jPath.filter(obj, "items2.names[name == Sam && name.length == 3].name")');
 		deepEqual(["Sam", "Jon"], jPath.filter(obj, "items2.names[(name == Sam && name.length == 3) || name == Jon].name"), 'jPath.filter(obj, "items2.names[(name == Sam && name.length == 3) || name == Jon].name")');
+		deepEqual(["Sam"], jPath.filter(obj, "primitive[. == Sam]"), 'jPath.filter(obj, "primitive[. == Sam]")');
 	});
 	test("Condition tests", function(){
 		deepEqual([3,4], jPath.filter(obj, "items[a > 2].a"), 'jPath.filter(obj, "items[a > 2].a")');
