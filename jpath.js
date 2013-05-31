@@ -103,7 +103,7 @@
                             //Second loop here is faster than recursive call
                             for(i = 0, m = subset.length; m > i; i++) {
                                 elem = subset[i];
-                                //Convert condition pairs to booleans
+                                //Convert condition pairs to boolean
                                 evalStr = condition.replace(rxPairs, function(match, pl, left, operator, right, pr) {
                                     return [pl, hidden.testPairs.call(elem, left, right, operator, cfn), pr].join(EMPTY);
                                 });
@@ -120,7 +120,7 @@
                             }
                         } else {
                             elem = subset;
-                            //Convert condition pairs to booleans
+                            //Convert condition pairs to boolean
                             evalStr = condition.replace(rxPairs, function(match, pl, left, operator, right, pr) {
                                 return [pl, hidden.testPairs.call(elem, left, right, operator, cfn), pr].join(EMPTY);
                             });
@@ -221,7 +221,7 @@
             /**
              * Merges results of sibling nodes into a single Array
              * @param  {String} pattern     String pattern or results
-             * @return {Array}              Concatinated results
+             * @return {Array}              Concatenated results
              */
             merge: function(pattern) {
                 var out = [],
@@ -281,7 +281,7 @@
         /**
          * Applies matching pattern to an object
          * @param  {String} pattern     jPath expression
-         * @param  {Function} cfn       Custom comparisson function
+         * @param  {Function} cfn       Custom comparison function
          * @param  {Object|Array} obj   Search subject object
          * @return {this}
          */
@@ -311,7 +311,7 @@
      * Runs a select filter against an object and returns an instance of a JPath object
      * @param  {Object|Array} obj   Search subject
      * @param  {String} pattern     jPath expression
-     * @param  {Function} cfn       Custom comparisson function (optional)
+     * @param  {Function} cfn       Custom comparison function (optional)
      * @return {JPath}              Instance of a JPath object pre-filled with results
      */
     module.select = function(obj, pattern, cfn) {
@@ -322,7 +322,7 @@
      * Returns results of the pattern-matching as an Array
      * @param  {Object|Array} obj   Search subject
      * @param  {String} pattern     jPath expression
-     * @param  {Function} cfn       Custom comparisson function (optional)
+     * @param  {Function} cfn       Custom comparison function (optional)
      * @return {Array}              Search results
      */
     module.filter = function(obj, pattern, cfn) {
