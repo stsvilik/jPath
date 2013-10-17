@@ -205,7 +205,7 @@
 
                 return function(left, right, operator, fn) {
                     var out = FALSE,
-                        leftVal = (left === ".") ? this.valueOf() : left.indexOf(PERIOD) >= 0 ? hidden.traverse(left, NULL, this) : this[left],
+                        leftVal = (left === ".") ? this.valueOf() : hidden.traverse(left, NULL, this),
                         //We clean up r to remove wrapping quotes and escaped quotes (both single/dbl)
                         pairs = hidden.matchTypes(leftVal, hidden.trim(hidden.qtrim(right)).replace(rxEscQuote, '$1'));
                     if(operator === "?") {
