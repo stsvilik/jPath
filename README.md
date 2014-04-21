@@ -4,7 +4,7 @@ Well folks, JPath came about the same time I got pissed-off at heavily nested JS
 It was both lengthy and unreadable to write a whole line of "If" checks just to get data
 nested 4 levels deep inside a JSON object.
 
-JPath is a traverse tool that allows XPATH-like navigation within a
+JPath is a traversal tool that allows XPATH-like navigation within a
 JSON structure and a little more. JPath also uses pattern syntax more familiar to JavaScript developers in the sense
 that instead of "/" to navigate nodes I would use "." (dot) notation (it supports '/' as well if you're old-fashioned).
 
@@ -15,7 +15,7 @@ specify one step (recursion) at a time.
 
 #### Does it support conditions?
 
-Just like XPATH, it does support conditional filtering, where you basically specify what nodes you want to retrieve
+Just like XPATH, it supports conditional filtering, where you basically specify what nodes you want to retrieve
 based on certain condition. Conditional queries work by comparing data members to value you provide inside your
 expression (it does not do comparing between data members). So for example if you have an array of objects and you want
 to get only those objects where member foo = 1, you would write "obj[foo == 1]", more examples later. It supports a
@@ -64,11 +64,11 @@ So if you're traversing an array of objects where your object may NOT contain a 
 #### What is not here
 
 - JPath does not support "select-all" syntax of XPATH that allowed you to find something anywhere in the XML document. This is too expensive in JavaScript.
-- JPath does not natively supports conditions that compare one data memeber against another, but this can be achieved using "a ? b" and the use of "this" in the custom comparator.
+- JPath does not natively support conditions that compare one data memeber against another, but this can be achieved using "a ? b" and the use of "this" in the custom comparator.
 
 #### Working with Arrays
 
-Working with Arrays requires a special character to reference Array itself in the expression, for this we'll use "\*".
+Working with Arrays requires a special character to reference the Array itself in the expression, for this we'll use "\*".
 
 #### Example:
 
@@ -107,7 +107,7 @@ API
 
 #### Examples
 
-1. Using Custom compare logic
+1. Using custom compare logic
 
         jPath.filter( JSON, "foo[bar ? test]", function(left, right) {
             //left - is the value of the data member bar inside foo
@@ -131,7 +131,7 @@ API
 
         jPath.select({myArray:[1,2,3,4,5]}, "myArray(0)");
 
-5. Using parenteces to group logic
+5. Using parentheses to group logic
 
         jPath.filter(obj, "*[(a==b || a == c) && c == d]");
 
